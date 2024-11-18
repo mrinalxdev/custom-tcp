@@ -313,7 +313,7 @@ const App = () => {
               value={equation}
               onChange={(e) => setEquation(e.target.value)}
               className="w-64 px-3 py-2 bg-gray-700 rounded text-white border border-gray-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
-              placeholder="e.g. sin(x) * cos(z)"
+              placeholder="place your equation here"
             />
             {error && <div className="text-red-500 mt-2 text-sm">{error}</div>}
           </div>
