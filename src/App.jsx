@@ -28,7 +28,6 @@ const App = () => {
   const animationFrameRef = useRef(null);
   const lastPalmPosition = useRef({ x: 0, y: 0 });
 
-  // Initialize Three.js scene
   useEffect(() => {
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x111827);
@@ -53,7 +52,6 @@ const App = () => {
     canvasRef.current.appendChild(renderer.domElement);
     rendererRef.current = renderer;
 
-    // Add OrbitControls
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
@@ -61,7 +59,6 @@ const App = () => {
     controls.zoomSpeed = 0.5;
     controlsRef.current = controls;
 
-    // Lighting
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
     scene.add(ambientLight);
 
@@ -78,7 +75,6 @@ const App = () => {
     pointLight2.position.set(5, -5, 5);
     scene.add(pointLight2);
 
-    // Grid and axes
     const gridHelper = new THREE.GridHelper(10, 20, 0x444444, 0x222222);
     gridHelper.position.y = -2;
     scene.add(gridHelper);
@@ -96,7 +92,6 @@ const App = () => {
 
     generateGraph();
 
-    // Animation loop
     const animate = () => {
       if (controlsRef.current) {
         controlsRef.current.update();
@@ -188,7 +183,7 @@ const App = () => {
     }
   };
 
-  // Load Handpose model
+  // todo : Load Handpose model
   useEffect(() => {
     const loadModel = async () => {
       setLoading(true);
@@ -205,7 +200,6 @@ const App = () => {
     loadModel();
   }, []);
 
-  // Handle camera stream
   useEffect(() => {
     if (cameraEnabled && videoRef.current) {
       navigator.mediaDevices
@@ -251,28 +245,22 @@ const App = () => {
           const indexTip = hand.landmarks[8];
           const thumbTip = hand.landmarks[4];
 
-          // Calculate palm movement
           const deltaX = palmBase[0] - lastPalmPosition.current.x;
           const deltaY = palmBase[1] - lastPalmPosition.current.y;
 
-          // Update last position
           lastPalmPosition.current = { x: palmBase[0], y: palmBase[1] };
 
-          // Calculate pinch distance
           const pinchDistance = Math.sqrt(
             Math.pow(thumbTip[0] - indexTip[0], 2) +
               Math.pow(thumbTip[1] - indexTip[1], 2)
           );
 
-          // Apply rotation
           if (Math.abs(deltaX) > 1) {
             controlsRef.current.rotateLeft(deltaX * 0.002);
           }
           if (Math.abs(deltaY) > 1) {
             controlsRef.current.rotateUp(deltaY * 0.002);
           }
-
-          // Apply zoom based on pinch
           if (pinchDistance < 40) {
             controlsRef.current.dollyIn(1.02);
           } else if (pinchDistance > 100) {
@@ -297,7 +285,6 @@ const App = () => {
     };
   }, [cameraEnabled, handposeModel]);
 
-  // Update graph when equation or styling changes
   useEffect(() => {
     generateGraph();
   }, [equation, graphColor, wireframe]);
